@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 
 tasks = [
   {
@@ -43,4 +44,18 @@ async def get_task(task_id: int):
         if task["id"] == task_id:
             return task
     raise HTTPException(status_code=404, detail="Task not found")
-    
+
+
+# Endpoint to create a new task
+@app.post("/tasks")
+async def create_task(title: str):
+    if not title:
+        raise HTTPException(status_code=400, detail="Title is required")
+    new_task = {
+        "id": len(tasks) + 1,
+        "title": title,
+        "done": False
+    }
+    tasks.append(new_task)
+
+    return JSONResponse(status_code=201, content=new_task)
