@@ -81,3 +81,6 @@ async def delete_task(task_id: int):
             tasks.remove(task)
             return JSONResponse(status_code=204, content={})
     raise HTTPException(status_code=404, detail="Task not found")
+
+
+#STEP 5: TEST IN SWAGGER UI
