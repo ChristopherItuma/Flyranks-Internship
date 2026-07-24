@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
+from db import create_db_and_tables, insert_sample_tasks
+
 
 tasks = [
   {
@@ -20,6 +22,9 @@ tasks = [
 ]
 
 app = FastAPI()
+
+create_db_and_tables()
+insert_sample_tasks()
 
 # Root endpoint that returns basic information about the API
 @app.get("/")
