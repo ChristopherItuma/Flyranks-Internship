@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-from db import create_db_and_tables, insert_sample_tasks, get_all_tasks, get_task_by_id
+from db import create_db_and_tables, insert_sample_tasks, get_all_tasks, get_task_by_id, create_task as create_task_in_db
 
 
 tasks = [
@@ -52,18 +52,13 @@ async def get_task(task_id: int):
 
 
 # Endpoint to create a new task
-@app.post("/tasks")
+@app.post("/tasks", status_code=201)
 async def create_task(title: str):
     if not title:
         raise HTTPException(status_code=400, detail="Title is required")
-    new_task = {
-        "id": len(tasks) + 1,
-        "title": title,
-        "done": False
-    }
-    tasks.append(new_task)
+    new_task = await create_task_in_db(title)
+    return new_task
 
-    return JSONResponse(status_code=201, content=new_task)
 
 
 # Endpoint to update an existing task by its ID

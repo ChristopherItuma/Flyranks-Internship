@@ -42,3 +42,13 @@ def get_task_by_id(task_id: int):
     with Session(engine) as session:
         task = session.query(Task).filter(Task.id == task_id).first()
         return task
+
+
+#create a new task
+async def create_task(title: str):
+    with Session(engine) as session:
+        new_task = Task(title=title)
+        session.add(new_task)
+        session.commit()
+        session.refresh(new_task)
+        return new_task
