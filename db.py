@@ -76,3 +76,5 @@ async def delete_task_in_db(task_id: int):
         session.delete(task)
         session.commit()
         return task
+
+#Stage 4: explored SQLite
