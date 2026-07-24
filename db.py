@@ -52,3 +52,27 @@ async def create_task(title: str):
         session.commit()
         session.refresh(new_task)
         return new_task
+
+#update an existing task by id
+async def update_task_in_db(task_id: int, title: str = None, done: bool = None):
+    with Session(engine) as session:
+        task = session.query(Task).filter(Task.id == task_id).first()
+        if task is None:
+            return None
+        if title is not None:
+            task.title = title
+        if done is not None:
+            task.done = done
+        session.commit()
+        session.refresh(task)
+        return task
+
+#delete a task by id
+async def delete_task_in_db(task_id: int):
+    with Session(engine) as session:
+        task = session.query(Task).filter(Task.id == task_id).first()
+        if task is None:
+            return None
+        session.delete(task)
+        session.commit()
+        return task

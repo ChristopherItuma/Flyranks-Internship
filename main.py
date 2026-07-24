@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-from db import create_db_and_tables, insert_sample_tasks, get_all_tasks, get_task_by_id, create_task as create_task_in_db
+from db import create_db_and_tables, insert_sample_tasks, get_all_tasks, get_task_by_id, create_task as create_task_in_db, update_task_in_db, delete_task_in_db
 
 
 tasks = [
@@ -64,23 +64,19 @@ async def create_task(title: str):
 # Endpoint to update an existing task by its ID
 @app.put("/tasks/{task_id}")
 async def update_task(task_id: int, title: str = None, done: bool = None):
-    for task in tasks:
-        if task["id"] == task_id:
-            if title is not None:
-                task["title"] = title
-            if done is not None:
-                task["done"] = done
-            return task
-    raise HTTPException(status_code=404, detail="Task not found")
+    task = get_task_by_id(task_id)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    updated_task = await update_task_in_db(task_id, title, done)
+    return updated_task
 
 # Endpoint to delete a task by its ID
 @app.delete("/tasks/{task_id}")
 async def delete_task(task_id: int):
-    for task in tasks:
-        if task["id"] == task_id:
-            tasks.remove(task)
-            return JSONResponse(status_code=204, content={})
-    raise HTTPException(status_code=404, detail="Task not found")
+    deleted_task = await delete_task_in_db(task_id)
+    if deleted_task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return JSONResponse(status_code=204, content={})
 
 
 #STEP 5: TEST IN SWAGGER UI
