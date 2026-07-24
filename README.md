@@ -4,12 +4,21 @@
 
 This project is a small FastAPI application that exposes a simple task management API. It lets you list tasks, retrieve a task by ID, create a new task, update an existing task, and delete a task.
 
-## Install and run
+## Why SQLite
 
-Use the following one-line command from the project folder to install the required packages and start the API:
+SQLite was chosen because this is a small task API that does not need a separate database server. It is lightweight, requires no database configuration or network connection, and stores the complete application database in one portable file. SQLModel also provides a simple way to define the `Task` table and work with SQLite from Python.
+
+## Database location
+
+The database is stored in the project directory as `tasks.db`. The path is configured in `db.py` with the relative SQLite URL `sqlite:///tasks.db`. The file and its tables are created automatically when the application starts.
+
+## Start the project
+
+From the project folder, install the dependencies and start the API:
 
 ```bash
-pip install fastapi uvicorn && uvicorn main:app --reload
+pip install fastapi uvicorn sqlmodel
+uvicorn main:app --reload
 ```
 
 Once the server starts, open the Swagger UI at:
@@ -43,6 +52,26 @@ content-type: application/json
 {"detail":"Task not found"}
 ```
 
+## Database viewer screenshot
+
+
+
+## Example SQL query
+
+This query lists every task in the database, including its completion status:
+
+```sql
+SELECT id, title, done
+FROM task
+ORDER BY id;
+```
+
+The same query can be run from the SQLite command line with:
+
+```bash
+sqlite3 tasks.db "SELECT id, title, done FROM task ORDER BY id;"
+```
+
 ## Swagger screenshot
 
-C:\Users\CHRIS\Desktop\flyranks_internship\week2_assignment\screenshot.png
+![Swagger UI screenshot](screenshot.png)
