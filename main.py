@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-from db import create_db_and_tables, insert_sample_tasks
+from db import create_db_and_tables, insert_sample_tasks, get_all_tasks, get_task_by_id
 
 
 tasks = [
@@ -40,15 +40,15 @@ async def health_check():
 # Endpoint to retrieve all tasks
 @app.get("/tasks")
 async def get_tasks():
-    return tasks
-
+    get_tasks = get_all_tasks()
+    return get_tasks
 # Endpoint to retrieve a specific task by its ID
 @app.get("/tasks/{task_id}")
 async def get_task(task_id: int):
-    for task in tasks:
-        if task["id"] == task_id:
-            return task
-    raise HTTPException(status_code=404, detail="Task not found")
+    task = get_task_by_id(task_id)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
 
 
 # Endpoint to create a new task

@@ -31,3 +31,14 @@ def insert_sample_tasks():
             session.add_all(sample_tasks)
             session.commit()
 
+#get all tasks from the database
+def get_all_tasks():
+    with Session(engine) as session:
+        tasks = session.query(Task).all()
+        return tasks
+
+# get single task by id
+def get_task_by_id(task_id: int):
+    with Session(engine) as session:
+        task = session.query(Task).filter(Task.id == task_id).first()
+        return task
